@@ -102,7 +102,7 @@
 4. 可开启开发服务器，代码变化后自动刷新页面：
    
    ```shell
-$ ng serve
+   $ ng serve
    ```
    
    此时已有一个完整的元部件示例正在运行，可在其之上开发并测试。
@@ -181,19 +181,19 @@ npm install change-case
 ```json
 {
     external: [
-        '@angular/core',
+        "@angular/core",
         "@angular/common",
         "@angular/common/http",
-        '@angular/forms',
-        '@angular/platform-browser',
-        '@angular/platform-browser/animations',
-        '@angular/animations',
+        "@angular/forms",
+        "@angular/platform-browser",
+        "@angular/platform-browser/animations",
+        "@angular/animations",
         "@angular/animations/browser",
-        'ngx-bootstrap/modal',
-        'ngx-bootstrap/accordion',
+        "ngx-bootstrap/modal",
+        "ngx-bootstrap/accordion",
         "ngx-bootstrap/collapse",
-        '@gspwidget/widget-devkit',
-        'echarts'
+        "@gspwidget/widget-devkit",
+        "echarts"
     ]
 }
 ```
