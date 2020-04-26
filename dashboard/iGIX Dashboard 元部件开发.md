@@ -1,122 +1,146 @@
-# 元部件开发文档
-
-
->  文档将按以下顺序讲解：
->
->  - 概览
->    - 开发流程
->    - 注意事项
->    - 简明 API
->  - 例子
->  - 详细内容
->
->  	 1. 目录结构
->  	 2. 元部件依赖库
->    3. `@Widget()` 装饰器
->    4. `WidgetBase` 元部件基类
->    5. 生命周期回调
->    6. 数据源接入
->    7.  可配置属性与 `@property`
->    8. 图片、字体等静态资源使用方式
->    9. 元部件配置文件
->    10. 打包及发布
->
->  - Widget devkit 详细 API
->
+# 元部件开发
 
 
 
-## 概览
+## 介绍
+
+元部件开发与原生 Angular 前端开发基本一致。若对 Angular 不熟悉，可先翻翻 [angular 文档](https://angular.cn/start)。
+
+
+
+### 准备工作
+
+0. 安装 [VS Code](https://code.visualstudio.com/) （推荐）
+2. 安装 [Node.js](https://nodejs.org/zh-cn/)（必需）
+3. Node.js 安装完成后，在任意目录的命令行中执行以下命令，安装 angular cli 和 widget cli：
+
+  ```shell
+  $ npm i -g @gspwidget/widget-cli@7.3.9 @gspwidget/widget-cli
+  ```
+
+4. 安装完成后，在本机找个合适的目录执行以下命令，在此目录下创建元部件根项目：
+
+  ```shell
+  $ widget init
+  ```
+
+5. 进入元部件根项目目录，安装依赖包：
+
+  ```shell
+  $ cd <你的元部件项目名>
+  $ npm i
+  ```
+
+  npm 安装依赖时常失败，失败就再来一次，或按照错误寻找解决办法，或寻求互联网的帮助。你一定能安上。
+
+6. 依赖安装成功后，执行以下命令开启开发服务器：
+
+  ```shell
+  $ ng serve -o
+  ```
+
+  开启成功后在浏览器中访问 [localhost:4200](http://localhost:4200)，看到如下画面就成功啦！
+
+
+  ![1587863832346](C:\Users\tongxin01\AppData\Roaming\Typora\typora-user-images\1587863832346.png)
+
 
 
 
 ### 开发流程
 
-1. 执行 `npm i @gspwidget/widget-cli -g` 全局安装元部件脚手架 Widget Cli；
-2. 执行 `widget init` 初始化元部件总项目，执行 `widget add` 新增元部件；
-3. 新增的元部件根组件为 `<widgets-project>/project/<widget-name>/src/lib/<widget-name>.component.ts`；用 `ng serve` 启动开发服务器，一边开发它一边预览；
-4. 开发完成，在 `widget.config.json` 中按需更改配置项，用 `widget build` 打包；
-5. 打包结果都在 `<widget-name>/release`，打成同名压缩包后上传至 Dashboard。
+1. 在元部件项目内执行以下命令，**新增一个元部件**（元部件名请遵守[命名规范](#注意事项)）：
 
-
-
-### 注意事项
-
-- 元部件的根组件需继承 `WidgetBase` 类，并加入 `@Widget({ name: 'xxx' })` 指定当前元部件名称；
-- 打包前记得写好元部件配置文件 `widget.config.json` 的必填字段 `name` 和 `displayName`；其中，`name` 的值必需与 `@Widget()` 中的 `name` 相同；
-- 元部件使用的图片等静态资源要放在 `<元部件根项目>/src/app/assets/<元部件名>/` ，引用路径为 `this.assetsBaseUrl + 'xxx.png'`
-
-
-
-### 简明 API (Widget-devkit)
-
-- Decorator `Widget`: 元部件根组件定义前加上 `@Widget({name: 'xxx'})` 以指定此根组件及元部件英文名称。
-- Decorator `Property`: 元部件根组件的属性定义前加上 `@Property()` 可将其声明为可配置属性。
-- Class `WidgetBase`: 元部件根组件需要继承的基类。
-  - Property `assetsBaseUrl: string`: 静态资源的 base 路径。
-  - Callback `onPropertyChange(propName: string, value)`: 可配置属性的值改变事件回调。
-  - Callback `onResized(width: number)`: 元部件容器大小变化事件回调。
-  - Callback `onGetData(data: any[])`: 数据获取完成事件回调。
-- Service `WidgetDevkitService`: Dashboard 提供的接口方法的集合。
-- Component `<widget-title-bar>`: 元部件公共标题栏组件。
-
-
-
-## 例子
-
-1. 全局**安装 widget-cli 命令行工具**：
-
-    ```shell
-    $ npm i @gspwidget/widget-cli -g
-    ```
-
-    
-
-2. 安装完成后进入合适的目录执行以下命令，在此目录内**创建一个元部件总项目**（之后的元部件都在这个总项目中）：
-
-    ```bash
-    $ widget init
-    # 出现询问输入，填写项目信息
-    ```
-
-    假设在 `D:/` 目录下执行命令，填写的总项目名为 `widget-project`，则生成元部件项目 `D:/widget-project`。
-    
-    创建完成后进入总项目目录，安装元部件项目依赖：
-    
-    ```shell
-    $ npm i
-    ```
-    
-3. 进入元部件项目，执行以下命令，**新增一个元部件**：
-
-    ```shell
-    $ widget add
-    ```
-
-    假设填写元部件名称为 `widget-weather`，则元部件存放目录为 `D:/widget-project/projects/widget-weather`，开发元部件就是编写元部件目录内的 .ts，.html，.css 文件。
-
-    之后每当要新建一个元部件，就在总项目目录内运行 `widget add` 命令。
-    
-    
-
-4. 可开启开发服务器，代码变化后自动刷新页面：
-   
    ```shell
-   $ ng serve
+   $ widget add
    ```
-   
-   此时已有一个完整的元部件示例正在运行，可在其之上开发并测试。
-> 元部件项目就是一个加入了特殊配置的 Angular 项目，利用 widget cli 可以省去手动增改配置的麻烦、元部件打包配置的麻烦。
 
+   之后每当要新建元部件，就在总项目目录内运行 `widget add` 命令。
 
+2. 新增的元部件在 `<widgets-project>/project/<widget-name>` 下，开发元部件就是编写元部件目录内的组件的 .ts，.html，.css 文件。
 
-5. 开发完成后，根据需要修改元部件配置文件 `widget.config.json`，完成后即可打包:
+   项目中自带一个元部件 Demo，您可以查看、修改它的代码，体验下元部件的工作原理。
+
+3. 开发完成后，在 `widget.config.json` 中按需更改配置项，执行以下命令打包：
 
    ```shell
    $ widget build
    ```
 
-   将打包结果 `<元部件名>/release/` 目录整个压缩，提交至 Dashboard，结束。
+4. 打包完成后，即可将生成的元部件包 `<widget-name>/release.zip` 上传至 Dashboard。
+
+
+
+### 可配置属性
+
+元部件具有强悍的可配置能力。
+
+元部件可以声明各种类型的**可配置的属性**，在部件配置中配置它们的值，而无需改变代码。
+
+![1587868019896](C:\Users\tongxin01\AppData\Roaming\Typora\typora-user-images\1587868019896.png)
+
+```js
+export class StackComponent extends WidgetBase implements OnInit, AfterViewInit {
+
+  @Property({
+    category: '数据',
+    displayName: 'X轴',
+  }) categoryFieldName = 'month'
+
+  @Property({
+    type: PropertyTypes.Object,
+    isArray: true,
+    displayName: 'Y轴',
+    objectOption: {
+      default: [],
+      objPropertyOptions: [{
+        name: 'valueField',
+        type: PropertyTypes.DataField
+      }, {
+        name: 'color',
+        type: PropertyTypes.Color
+      }]
+    },
+    category: '数据'
+  }) yFieldObjs: { valueField: string, color: string }[] = [{
+    valueField: 'totalSale', color: '#1f9cfe'
+  }, {
+    valueField: 'lastYear', color: '#ff7ccd'
+  }]
+
+  // y 轴显示范围三件套
+  @Property(MyPropertyOptions.filterYFlag) filterYFlag = false
+  @Property(MyPropertyOptions.minY) minY = 0
+  @Property(MyPropertyOptions.maxY) maxY = 200
+  // 显示数字
+  @Property(MyPropertyOptions.showLabel) showLabel = false
+  // 悬浮显示详情
+  @Property(MyPropertyOptions.showTooltip) showTooltip = false
+  // 图例样式
+  @Property(MyPropertyOptions.legendStyleOption) legendStyle = 'scroll'
+
+  // 点击柱子联查
+  @Property({
+    displayName: '点击柱子',
+    ...dataJumpOption
+  }) barJumpConfig: DataJumpConfig
+}
+```
+
+详情见 [可配置属性与 @property](#7. 可配置属性与 @property)。
+
+
+
+### 注意事项
+
+- **元部件命名规范**：widget add 时，应使用 `<你们的su前缀>-<widget-name>` 的格式命名新元部件，要求：
+  - **全小写字母**，中间用短横线连接；
+  - **无单个字母**。反例：test-a；
+  - 带有 su 前缀（建议）。
+- 打包前记得写好元部件配置文件 `widget.config.json` 的必填字段 `name` 和 `displayName`；其中，`name` 的值必需与 `@Widget()` 中的 `name` 值相同。详情见 []()。
+- 元部件使用的图片等静态资源要放在 `<元部件根项目>/src/app/assets/<元部件名>/` ，引用路径为 `this.assetsBaseUrl + 'xxx.png'`。详情见 [a](a)。
+
+
 
 
 
@@ -168,13 +192,13 @@ export * from './lib/widget-weather.module';
 
 ### 2. 元部件依赖库
 
-元部件依赖库照常用 npm 安装即可开发调试：
+元部件依赖库直接用 npm 安装即可：
 
 ```bash
 npm install change-case
 ```
 
-默认情况下，开发完成后用 `widget build` 打包时，会将依赖库打包到元部件脚本文件 `main.js` 中，在外部框架内运行时不会缺少依赖。
+默认情况下，开发完成后用 `widget build` 打包时，会将依赖库打包到元部件脚本文件 `main.js` 中，在外部框架内运行时不会缺少这些依赖。
 
 但如果多个元部件都引用了相同的库（比如 `@angular/core`），把这些公共库打包进每个 `main.js` 会造成不小的空间浪费。把公共库加入到 `<根项目目录>/rollup.config.json` 的 `external` 数组中，则不会被打包到 `main.js`：
 
@@ -198,16 +222,14 @@ npm install change-case
 }
 ```
 
-并在把公共库及对应版本注册到外部框架（如Dashboard）中，让外部框架加载此依赖。
+把公共库及对应版本注册到外部框架（如Dashboard）中，让外部框架加载此依赖。
 
 
 
 
 ### 3. @Widget() 装饰器
 
-> 外部框架运行时通常会同时存在多个元部件，每个元部件也可能包含多个组件。
-
-为了让外部框架能找到一个元部件对应的根组件，给根组件加上 `@Widget({name: 'xxx'})`。框架就能根据元部件的 `widget.config.json` 的 `name` 值，在茫茫一堆组件中找到它并渲染：
+`@Widget()` 参数中的 `name` ，应与 `widget.config.json` 的 `name` 保持一致。
 
 ```js
 // widget-example.component.ts
@@ -222,8 +244,6 @@ export class WidgetExampleComponent extends WidgetBase {
     "displayName": "示例元部件"
 }
 ```
-
-因此 `@Widget()` 参数中的 `name` ，应与 `widget.config.json` 的 `name` 保持一致。
 
 
 
@@ -273,51 +293,33 @@ export class WidgetExampleComponent extends WidgetBase { // <-- 继承 WidgetBas
 
 
 
-### 6. 数据源接入
+### 6. 数据源接入（@gspwidget/widget-core@1.0.3 开始启用）
 
+> 元部件可以亲自在代码中处理数据加载，也可以获得在外部框架配置的数据，本节是后者的实现方式。
 
-
-#### 方法一（已废弃，将在 widget-core@0.2.0, widget-devkit@0.7.0 移除）
-
-> 元部件可以亲自在代码中处理数据加载。
->
-> 但对于公共的展示类元部件（如柱状图等图表元部件），应将复杂的数据源配置、请求、处理等交由外部框架处理，元部件本身仅负责当获取到新数据时更新渲染。
-
-要使用框架提供的外部数据源，元部件仅需实现数据加载完成的回调函数 `onGetData(data)`  —— 则当数据配置发生变化，外框架会自动加载数据，并在完成后将数据结果通过此函数发送给元部件。举例：
-
-```js
-// 当获取到外部数据
-onGetData (data: any[]) {
-    this.data = data // 保存数据
-    this.render() // 用新数据重新渲染元部件内容
-}
-```
-
-每当获得新数据时，元部件都应保证渲染出正确的新数据内容。
-
-外部数据源接入默认打开，若不需要，可在配置文件中配置 `widget.config.json` 的 `usePublicData` 为 `false` 来关闭。
-
-
-
-#### 方法二（推荐，将在 widget-core@0.2.0, widget-devkit@0.7.0 启用）
-
-> 元部件可以亲自在代码中处理数据加载，也可以获得在外部框架配置的数据，本节仅讲解后者。
-
-要使用框架提供的外部数据源，元部件应在合适的初始化完成阶段（一般是 `ngOnInit()` 回调）调用  `WidgetBase.loadData()` 触发加载数据，并监听数据加载成功回调。举例：
+要使用框架提供的外部数据源，元部件组件中需要依赖注入数据服务 `WidgetDataService` 的实例。之后在合适的时机，调用服务的 `loadData()` 方法获取数据。举例：
 
 ```typescript
-ngOnInit () {
-    // 初始化时触发数据加载
-    this.loadData().subscribe(data => {
-        this.data = data
-        this.render()
+import { WidgetDataService } from '@gspwidget/widget-core';
+
+export class LineChartComponent extends WidgetBase {
+    constructor(
+        private dataService: WidgetDataService
+    ) {
+        super()
+    }
+
+    ngOnInit () {
+        // 初始化时触发数据加载
+        this.dataService.loadData().subscribe(data => {
+            this.data = data
+            this.render()
+        }
     }
 }
 ```
 
-`WidgetBase.loadData()` 返回一个“新数据加载完成”的 `EventEmitter`，每当外部框架加载到新数据时都将触发此事件，调用元部件内订阅的处理函数。当获得新数据时，元部件都应保证渲染出正确的新数据内容。
-
-外部数据源接入默认打开，若不需要，可在配置文件中配置 `widget.config.json` 的 `usePublicData` 为 `false` 来关闭。
+每当外部框架加载到新数据时都将触发上面注册的事件处理函数，从而使元部件渲染出新数据对应的内容。
 
 
 
@@ -487,12 +489,12 @@ Angular 项目中的静态资源文件需要放在 Angular Application 的 `/ass
 
 ### 10. 打包及发布
 
-在元部件总项目下执行 `widget build [widgetName]` 打包。（不填写 `widgetName` 可在下一步的下拉列表中选择元部件。）
+在元部件总项目下执行 `widget build [widgetName]` 打包。（不填写 `widgetName` 可在下拉列表中选择元部件。）
 
-打包结果是 `<元部件名>/release` 目录，结构如下：
+打包结果是 `<元部件名>/release` 目录和 `<元部件名>/<元部件名>.zip` 压缩包，压缩包结构如下：
 
 ```
-<元部件名>/
+<元部件名>.zip/
 	release/
         main.js					-- 元部件脚本，对 library aot 打包生成
         assets/					-- 元部件的静态资源目录，来自<元部件根项目>/src/app/assets/<元部件名>
@@ -503,7 +505,7 @@ Angular 项目中的静态资源文件需要放在 Angular Application 的 `/ass
         
 ```
 
-打包完成后即可对 `release/` 目录打压缩包，将生成的 `release.zip` 上传。
+将生成的 `<元部件名>.zip` 上传至 iGIX 即可添加元部件。
 
 
 
