@@ -15,7 +15,7 @@
 3. Node.js 安装完成后，在任意目录的命令行中执行以下命令，安装 angular cli 和 widget cli：
 
   ```shell
-  $ npm i -g @gspwidget/widget-cli@7.3.9 @gspwidget/widget-cli
+  $ npm i -g @angular/cli@7.3.9 @gspwidget/widget-cli
   ```
 
 4. 安装完成后，在本机找个合适的目录执行以下命令，在此目录下创建元部件根项目：
