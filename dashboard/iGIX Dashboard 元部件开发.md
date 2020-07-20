@@ -1,5 +1,9 @@
 # 元部件开发
 
+[TOC]
+
+
+
 
 
 ## 介绍
@@ -31,7 +35,15 @@
   $ npm i
   ```
 
-  npm 安装依赖时常失败，失败就再来一次，或按照错误寻找解决办法，或寻求互联网的帮助。你一定能安上。
+  	npm 安装依赖时常失败，失败就再来一次，或按照错误寻找解决办法，或寻求互联网的帮助。
+
+​	如果是网络问题，可给 npm 配置仓库地址为国内的淘宝
+
+```shell
+
+```
+
+​	你一定能安上。
 
 6. 依赖安装成功后，执行以下命令开启开发服务器：
 
@@ -41,8 +53,7 @@
 
   开启成功后在浏览器中访问 [localhost:4200](http://localhost:4200)，看到如下画面就成功啦！
 
-
-  ![1587863832346](C:\Users\tongxin01\AppData\Roaming\Typora\typora-user-images\1587863832346.png)
+<img src="iGIX Dashboard 元部件开发.assets/1587863832346.png" alt="1587863832346" style="zoom: 33%;" />
 
 
 
@@ -77,7 +88,7 @@
 
 元部件可以声明各种类型的**可配置的属性**，在部件配置中配置它们的值，而无需改变代码。
 
-![1587868019896](C:\Users\tongxin01\AppData\Roaming\Typora\typora-user-images\1587868019896.png)
+<img src="iGIX Dashboard 元部件开发.assets/1587868019896.png" alt="1587868019896" style="zoom:50%;" />
 
 ```js
 export class StackComponent extends WidgetBase implements OnInit, AfterViewInit {
@@ -137,8 +148,8 @@ export class StackComponent extends WidgetBase implements OnInit, AfterViewInit 
   - **全小写字母**，中间用短横线连接；
   - **无单个字母**。反例：test-a；
   - 带有 su 前缀（建议）。
-- 打包前记得写好元部件配置文件 `widget.config.json` 的必填字段 `name` 和 `displayName`；其中，`name` 的值必需与 `@Widget()` 中的 `name` 值相同。详情见 []()。
-- 元部件使用的图片等静态资源要放在 `<元部件根项目>/src/app/assets/<元部件名>/` ，引用路径为 `this.assetsBaseUrl + 'xxx.png'`。详情见 [a](a)。
+- 打包前记得写好元部件配置文件 `widget.config.json` 的必填字段 `name` 和 `displayName`；其中，`name` 的值必需与 `@Widget()` 中的 `name` 值相同。详情见 [元部件配置文件](#9. 元部件配置文件)。
+- 元部件使用的图片等静态资源要放在 `<元部件根项目>/src/app/assets/<元部件名>/` ，引用路径为 `this.assetsBaseUrl + 'xxx.png'`。详情见 [图片、字体等静态资源使用方式](#8. 图片、字体等静态资源使用方式)。
 
 
 
@@ -432,6 +443,14 @@ Angular 项目中的静态资源文件需要放在 Angular Application 的 `/ass
 ```
 
 `this.assetsBaseUrl` 在不同的运行环境中会处理为不同的路径，所以应使用它而不应该手动写作 `<元部件根项目>/src/app/assets/<元部件名>/avatar.png`。
+
+### 9. 国际化
+
+对于 code 的选取，可以先看 Dashboard 的公共国际化资源文件中是否存在合适的 code【放 公共 code 的链接】，这里有我们维护的常用 code。如果有，可以直接使用此 code，不用加元部件前缀。【把常用分类、common property 的、元部件常用的都加入】
+
+这样做的好处是你不用自己维护这个 code 的翻译，并且省掉了这些翻译对当前元部件占用的空间。
+
+
 
 
 
